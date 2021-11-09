@@ -13,6 +13,9 @@ class ElementRepository
         $this->templateDir = $templateDir;
     }
 
+    /**
+     * @return array<int, Element>
+     */
     public function getAll(): array
     {
         $finder = new Finder();
