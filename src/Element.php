@@ -36,9 +36,7 @@ class Element
             return '';
         }
 
-        $content = \Safe\file_get_contents($this->getTemplateDir().$this->getPath());
-
-        return $content;
+        return \Safe\file_get_contents($this->getTemplateDir().$this->getPath());
     }
 
     protected function getTemplateDir(): string
@@ -79,7 +77,7 @@ class Element
             return $this;
         }
 
-        if ($this->path != $path) {
+        if ($this->path !== $path) {
             if (file_exists($this->getTemplateDir().$path)) { // check if we don't erase an other file
                 throw new \Exception('file ever exist'); // todo move it to assert to avoid error 500..
             }
@@ -112,7 +110,7 @@ class Element
             \Safe\unlink($this->unlink);
         }
 
-        return false !== file_put_contents($this->getTemplateDir().$this->path, $this->code) ? true : false;
+        return false !== file_put_contents($this->getTemplateDir().$this->path, $this->code);
     }
 
     public function deleteElement(): bool
