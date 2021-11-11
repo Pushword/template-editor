@@ -22,8 +22,8 @@ class ElementRepository
         $finder->files()->in($this->templateDir);
         $elements = [];
 
-        foreach ($finder as $file) {
-            $elements[] = new Element($this->templateDir, \Safe\substr(\strval($file), \strlen($this->templateDir)));
+        foreach ($finder as $singleFinder) {
+            $elements[] = new Element($this->templateDir, \Safe\substr(\strval($singleFinder), \strlen($this->templateDir)));
         }
 
         return $elements;
