@@ -23,7 +23,7 @@ class ElementRepository
         $elements = [];
 
         foreach ($finder as $file) {
-            $elements[] = new Element($this->templateDir, substr(\strval($file), \strlen($this->templateDir)));
+            $elements[] = new Element($this->templateDir, \Safe\substr(\strval($file), \strlen($this->templateDir)));
         }
 
         return $elements;

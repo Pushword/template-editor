@@ -2,7 +2,6 @@
 
 namespace Pushword\TemplateEditor;
 
-use Exception;
 use LogicException;
 
 /**
@@ -20,10 +19,7 @@ class Element
 
     public function __construct(string $templateDir, ?string $path = null)
     {
-        $realPathTemplateDir = realpath($templateDir);
-        if (false === $realPathTemplateDir) {
-            throw new Exception("An error occurend with your template dir\u{a0}`".$templateDir.'`');
-        }
+        $realPathTemplateDir = \Safe\realpath($templateDir);
 
         $this->templateDir = $realPathTemplateDir;
 
@@ -40,10 +36,7 @@ class Element
             return '';
         }
 
-        $content = file_get_contents($this->getTemplateDir().$this->getPath());
-        if (false === $content) {
-            throw new Exception('Impossible to load code from `'.$this->getPath().'`');
-        }
+        $content = \Safe\file_get_contents($this->getTemplateDir().$this->getPath());
 
         return $content;
     }
@@ -116,7 +109,7 @@ class Element
     public function storeElement(): bool
     {
         if (null !== $this->unlink) { // for rename
-            unlink($this->unlink);
+            \Safe\unlink($this->unlink);
         }
 
         return false !== file_put_contents($this->getTemplateDir().$this->path, $this->code) ? true : false;
