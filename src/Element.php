@@ -49,7 +49,7 @@ class Element
         return $this->path;
     }
 
-    public function getEncodedPath(): ?string
+    public function getEncodedPath(): string
     {
         if (null === $this->path) {
             throw new LogicException('the path must be setted before to get the encoded path');
