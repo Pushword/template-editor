@@ -86,6 +86,7 @@ class Element
             if (file_exists($this->getTemplateDir().$this->path)) {
                 $this->unlink = $this->getTemplateDir().$this->path;
             }
+
             $this->path = $path;
         }
 
