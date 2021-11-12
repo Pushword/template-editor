@@ -108,7 +108,7 @@ class Element
     public function storeElement(): bool
     {
         if (null !== $this->unlink) { // for rename
-            \Safe\unlink($this->unlink);
+            unlink($this->unlink);
         }
 
         return false !== file_put_contents($this->getTemplateDir().$this->path, $this->code);
