@@ -7,19 +7,19 @@ use Pushword\TemplateEditor\ElementRepository;
 
 class ElementAdminTest extends AbstractAdminTestClass
 {
-    public function testAdmin(): void
+    public function testAdmin()
     {
         $client = $this->loginUser();
 
         $client->catchExceptions(false);
 
         $client->request('GET', '/admin/template/list');
-        self::assertResponseIsSuccessful();
+        $this->assertResponseIsSuccessful();
 
-        $repo = new ElementRepository(self::bootKernel()->getProjectDir().'/templates', [], false);
+        $repo = new ElementRepository(self::$kernel->getProjectDir().'/templates', [], false);
         $element = $repo->getAll()[0];
 
         $client->request('GET', '/admin/template/edit/'.$element->getEncodedPath()); // /pushword.piedweb.com/page/_content.html.twig
-        self::assertResponseIsSuccessful();
+        $this->assertResponseIsSuccessful();
     }
 }

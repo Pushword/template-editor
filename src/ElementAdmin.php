@@ -2,8 +2,7 @@
 
 namespace Pushword\TemplateEditor;
 
-use Exception;
-use Pushword\Core\Entity\User;
+use Pushword\Core\Entity\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -34,8 +33,9 @@ final class ElementAdmin extends AbstractController
         public bool $disableCreation,  // template_editor_disable_creation
         Security $security,
     ) {
+        /** @var ?UserInterface */
         $user = $security->getUser();
-        if ($user instanceof User && $user->hasRole('ROLE_SUPER_ADMIN')) {
+        if (true === $user?->hasRole('ROLE_SUPER_ADMIN')) {
             $this->canBeEditedList = [];
             $this->disableCreation = false;
         }
@@ -73,11 +73,10 @@ final class ElementAdmin extends AbstractController
             if (! $element instanceof Element) {
                 throw $this->createNotFoundException('`'.$encodedPath.'` element does not exist...');
             }
-
-            return $element;
         }
 
-        return $this->disableCreation ? throw new Exception('creation is disabled') : new Element($this->kernel->getProjectDir().'/templates');
+        return $element ??
+            ($this->disableCreation ? throw new \Exception('creation is disabled') : new Element($this->kernel->getProjectDir().'/templates'));
     }
 
     private function clearTwigCache(): void
@@ -103,7 +102,7 @@ final class ElementAdmin extends AbstractController
             $element = $form->getData();
 
             if (! $element instanceof Element) {
-                throw new Exception('an error occured');
+                throw new \Exception('an error occured');
             }
 
             $element->storeElement();

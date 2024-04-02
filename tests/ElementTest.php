@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ElementTest extends KernelTestCase
 {
-    public function testIt(): void
+    public function testIt()
     {
         $templateDir = __DIR__.'/../../skeleton/templates';
         $path = 'newTemplateFile.html.twig';
@@ -19,24 +19,24 @@ class ElementTest extends KernelTestCase
 
         $element->storeElement();
 
-        self::assertFileExists($templateDir.'/'.$path);
+        $this->assertTrue(file_exists($templateDir.'/'.$path));
 
         $element->setPath($newPath);
 
         $element->storeElement();
 
-        self::assertFileDoesNotExist($templateDir.'/'.$path);
-        self::assertFileExists($templateDir.'/'.$newPath);
+        $this->assertTrue(! file_exists($templateDir.'/'.$path));
+        $this->assertTrue(file_exists($templateDir.'/'.$newPath));
 
         $element->deleteElement();
 
-        self::assertFileDoesNotExist($templateDir.'/'.$path);
-        self::assertFileDoesNotExist($templateDir.'/'.$newPath);
+        $this->assertTrue(! file_exists($templateDir.'/'.$path));
+        $this->assertTrue(! file_exists($templateDir.'/'.$newPath));
 
-        self::assertSame($element->getCode(), '<p>test</p>');
+        $this->assertSame($element->getCode(), '<p>test</p>');
     }
 
-    public function testLoadCode(): void
+    public function testLoadCode()
     {
         $templateDir = __DIR__.'/../../skeleton/templates';
         $newPath = 'newTemplateFile2.html.twig';
@@ -48,27 +48,27 @@ class ElementTest extends KernelTestCase
         unset($element);
 
         $element = new Element($templateDir, $newPath);
-        self::assertSame('<p>test</p>', $element->getCode());
+        $this->assertSame('<p>test</p>', $element->getCode());
 
         $element->deleteElement();
     }
 
-    public function testRepository(): void
+    public function testRepository()
     {
         $templateDir = __DIR__.'/../../skeleton/templates';
         $repo = new ElementRepository($templateDir, [], false);
 
         $templates = $repo->getAll();
-        self::assertGreaterThan(0, \count($templates));
+        $this->assertTrue(\count($templates) > 0);
 
-        self::assertSame($templates[0]->getPath(), $repo->getOneByEncodedPath($templates[0]->getEncodedPath())?->getPath());
+        $this->assertSame($templates[0]->getPath(), $repo->getOneByEncodedPath($templates[0]->getEncodedPath())->getPath());
 
         $templateDir = __DIR__.'/../../skeleton/templates';
         $repo = new ElementRepository($templateDir, [$templates[0]->getPath()], true);
 
         $templates = $repo->getAll();
-        self::assertCount(1, $templates);
-        self::assertSame($templates[0]->getPath(), $repo->getOneByEncodedPath($templates[0]->getEncodedPath())?->getPath());
-        self::assertSame($templates[0]->movingIsDisabled(), true);
+        $this->assertTrue(1 === \count($templates));
+        $this->assertSame($templates[0]->getPath(), $repo->getOneByEncodedPath($templates[0]->getEncodedPath())->getPath());
+        $this->assertSame($templates[0]->movingIsDisabled(), true);
     }
 }

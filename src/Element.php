@@ -2,25 +2,26 @@
 
 namespace Pushword\TemplateEditor;
 
-use Exception;
-use LogicException;
-
 use function Safe\file_get_contents;
 use function Safe\realpath;
 
 /**
  * Entity.
  */
-final class Element
+class Element
 {
-    private string $code;
+    protected ?string $path = null;
 
-    private ?string $unlink = null;
+    protected ?string $code = null;
+
+    protected string $templateDir;
+
+    protected ?string $unlink = null;
 
     public function __construct(
-        private string $templateDir,
-        private ?string $path = null,
-        private readonly bool $disableMoving = false
+        string $templateDir,
+        ?string $path = null,
+        protected bool $disableMoving = false
     ) {
         $realPathTemplateDir = realpath($templateDir);
 
@@ -30,10 +31,10 @@ final class Element
             $this->path = $this->normalizePath($path);
         }
 
-        $this->code = $this->retrieveCode();
+        $this->code = $this->loadCode();
     }
 
-    protected function retrieveCode(): string
+    protected function loadCode(): string
     {
         if (null === $this->path) {
             return '';
@@ -51,16 +52,15 @@ final class Element
         return $this->templateDir;
     }
 
-    /** @psalm-suppress MixedReturnStatement */
-    public function getPath(): string
+    public function getPath(): ?string
     {
-        return $this->path ?? '';
+        return $this->path;
     }
 
     public function getEncodedPath(): string
     {
         if (null === $this->path) {
-            throw new LogicException('the path must be setted before to get the encoded path');
+            throw new \LogicException('the path must be setted before to get the encoded path');
         }
 
         return md5($this->path);
@@ -78,7 +78,7 @@ final class Element
         }
 
         if (str_contains($path, '..')) { // avoiding to store in an other folder than templates.
-            throw new Exception("You can't do that...");
+            throw new \Exception("You can't do that...");
         }
 
         $path = $this->normalizePath($path);
@@ -91,7 +91,7 @@ final class Element
 
         if ($this->path !== $path) {
             if (file_exists($this->getTemplateDir().$path)) { // check if we don't erase an other file
-                throw new Exception('file ever exist'); // todo move it to assert to avoid error 500..
+                throw new \Exception('file ever exist'); // todo move it to assert to avoid error 500..
             }
 
             // we will delete if we rename it
@@ -123,12 +123,12 @@ final class Element
             unlink($this->unlink);
         }
 
-        return false !== file_put_contents($this->getTemplateDir().$this->getPath(), $this->code);
+        return false !== file_put_contents($this->getTemplateDir().$this->path, $this->code);
     }
 
     public function deleteElement(): bool
     {
-        return unlink($this->getTemplateDir().$this->getPath());
+        return unlink($this->getTemplateDir().$this->path);
     }
 
     public function movingIsDisabled(): bool
