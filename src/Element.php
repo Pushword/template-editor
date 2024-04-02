@@ -2,6 +2,9 @@
 
 namespace Pushword\TemplateEditor;
 
+use Exception;
+use LogicException;
+
 use function Safe\file_get_contents;
 use function Safe\realpath;
 
@@ -57,7 +60,7 @@ final class Element
     public function getEncodedPath(): string
     {
         if (null === $this->path) {
-            throw new \LogicException('the path must be setted before to get the encoded path');
+            throw new LogicException('the path must be setted before to get the encoded path');
         }
 
         return md5($this->path);
@@ -75,7 +78,7 @@ final class Element
         }
 
         if (str_contains($path, '..')) { // avoiding to store in an other folder than templates.
-            throw new \Exception("You can't do that...");
+            throw new Exception("You can't do that...");
         }
 
         $path = $this->normalizePath($path);
@@ -88,7 +91,7 @@ final class Element
 
         if ($this->path !== $path) {
             if (file_exists($this->getTemplateDir().$path)) { // check if we don't erase an other file
-                throw new \Exception('file ever exist'); // todo move it to assert to avoid error 500..
+                throw new Exception('file ever exist'); // todo move it to assert to avoid error 500..
             }
 
             // we will delete if we rename it

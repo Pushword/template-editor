@@ -2,6 +2,7 @@
 
 namespace Pushword\TemplateEditor;
 
+use Exception;
 use Pushword\Core\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -76,7 +77,7 @@ final class ElementAdmin extends AbstractController
             return $element;
         }
 
-        return $this->disableCreation ? throw new \Exception('creation is disabled') : new Element($this->kernel->getProjectDir().'/templates');
+        return $this->disableCreation ? throw new Exception('creation is disabled') : new Element($this->kernel->getProjectDir().'/templates');
     }
 
     private function clearTwigCache(): void
@@ -102,7 +103,7 @@ final class ElementAdmin extends AbstractController
             $element = $form->getData();
 
             if (! $element instanceof Element) {
-                throw new \Exception('an error occured');
+                throw new Exception('an error occured');
             }
 
             $element->storeElement();
