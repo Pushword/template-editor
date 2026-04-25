@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pushword\TemplateEditor\Tests;
 
 use PHPUnit\Framework\Attributes\Group;
@@ -8,7 +10,7 @@ use Pushword\TemplateEditor\ElementRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 #[Group('integration')]
-class ElementAdminTest extends AbstractAdminTestClass
+final class ElementAdminTest extends AbstractAdminTestClass
 {
     public function testAdmin(): void
     {
